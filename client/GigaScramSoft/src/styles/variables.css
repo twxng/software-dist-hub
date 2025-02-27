@@ -1,0 +1,64 @@
+:root {
+	/* Colors */
+	--primary-color: #3B5998;
+	/* --primary-hover: #344e86; */
+	--secondary-color: #1E3A8A;
+	--text-primary: #1F2937;
+	--text-secondary: #4B5563;
+	--background-primary: #F9FAFB;
+	--background-secondary: #F3F4F6;
+	--white: #FFFFFF;
+	--error: #EF4444;
+	--success: #10B981;
+	--warning: #F59E0B;
+
+	/* auth modal */
+	--auth-tab-active: var(--primary-color);
+	--auth-tab-hover: var(--primary-hover);
+	--auth-tab-inactive: var(--text-secondary);
+	--auth-tab-border: var(--primary-color);
+	--auth-button-bg: var(--primary-color);
+	--auth-button-hover: var(--primary-hover);
+	--auth-input-border: #E5E7EB;
+	--auth-input-focus: rgb(25, 63, 189);
+
+	/* Typography */
+	--font-family: 'Inter', system-ui, -apple-system, sans-serif;
+	--font-size-xs: 0.75rem;
+	--font-size-sm: 0.875rem;
+	--font-size-base: 1rem;
+	--font-size-lg: 1.125rem;
+	--font-size-xl: 1.25rem;
+	--font-size-2xl: 1.5rem;
+	--font-size-3xl: 1.875rem;
+	--font-size-4xl: 2.25rem;
+
+	/* Spacing */
+	--spacing-1: 0.25rem;
+	--spacing-2: 0.5rem;
+	--spacing-3: 0.75rem;
+	--spacing-4: 1rem;
+	--spacing-5: 1.25rem;
+	--spacing-6: 1.5rem;
+	--spacing-8: 2rem;
+	--spacing-10: 2.5rem;
+	--spacing-12: 3rem;
+
+	/* Border Radius */
+	--radius-sm: 0.125rem;
+	--radius-base: 0.25rem;
+	--radius-md: 0.375rem;
+	--radius-lg: 0.5rem;
+	--radius-xl: 1rem;
+	--radius-2xl: 1.5rem;
+
+	/* Shadows */
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+	/* Transitions */
+	--transition-base: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-smooth: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}

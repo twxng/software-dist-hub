@@ -1,0 +1,122 @@
+/* .signup-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #183679 11%, #b0c4f8 100%);
+  padding: 1rem;
+}
+
+.signup-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--transition-smooth);
+}
+
+.signup-card:hover {
+  transform: translateY(-2px);
+}
+
+.signup-title {
+  color: var(--primary-color);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.form-group input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(59, 89, 152, 0.1);
+}
+
+.signup-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-base);
+}
+
+.signup-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: var(--font-size-sm);
+}
+
+.login-link a {
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.login-link a:hover {
+  color: var(--primary-hover);
+}
+
+.error-message {
+  color: var(--error);
+  font-size: var(--font-size-sm);
+  margin-top: 0.25rem;
+}
+
+.form-group input.error {
+  border-color: var(--error);
+}
+
+.form-group input.error:focus {
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.signup-button:disabled {
+  background-color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .signup-card {
+    padding: 2rem;
+  }
+  
+  .signup-title {
+    font-size: var(--font-size-xl);
+  }
+}  */

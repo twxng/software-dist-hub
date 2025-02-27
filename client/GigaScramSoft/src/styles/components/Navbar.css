@@ -1,0 +1,241 @@
+.navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	background-color: var(--primary-color);
+	box-shadow: var(--shadow-md);
+	height: 4rem;
+	display: flex;
+	align-items: center;
+}
+
+.navbar-container {
+	/* background-color: black; */
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 var(--spacing-4);
+	width: 100%;
+	max-width: 98%;
+	margin: 0 auto;
+	gap: var(--spacing-4);
+}
+
+.navbar-left {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-4);
+	justify-content: flex-start;
+}
+
+.menu-button {
+	background: none;
+	border: none;
+	color: var(--white);
+	padding: var(--spacing-2);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.menu-button svg {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.navbar-brand {
+	font-size: var(--font-size-xl);
+	font-weight: 700;
+	color: var(--white);
+	text-decoration: none;
+	transition: opacity var(--transition-base);
+	margin-left: 0;
+}
+
+.navbar-brand:hover {
+	opacity: 0.9;
+}
+
+.search-container {
+	display: flex;
+	flex: 1;
+	max-width: 600px;
+	gap: var(--spacing-2);
+}
+
+.search-input {
+	flex: 1;
+	background-color: rgba(255, 255, 255, 0.15);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: var(--white);
+	padding: var(--spacing-2) var(--spacing-4);
+	border-radius: var(--radius-md);
+	font-size: var(--font-size-base);
+	transition: all var(--transition-base);
+}
+
+.search-input::placeholder {
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.search-input:focus {
+	background-color: rgba(255, 255, 255, 0.2);
+	border-color: rgba(255, 255, 255, 0.3);
+	outline: none;
+}
+
+.search-filter {
+	background-color: rgba(255, 255, 255, 0.15);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: var(--white);
+	padding: var(--spacing-2) var(--spacing-4);
+	border-radius: var(--radius-md);
+	font-size: var(--font-size-base);
+	cursor: pointer;
+	transition: all var(--transition-base);
+}
+
+.search-filter:focus {
+	outline: none;
+	background-color: rgba(255, 255, 255, 0.2);
+	border-color: rgba(255, 255, 255, 0.3);
+}
+
+.search-filter option {
+	background-color: var(--primary-color);
+	color: var(--white);
+}
+
+.navbar-right {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-4);
+}
+
+.navbar-button {
+	background-color: var(--white);
+	color: var(--primary-color);
+	padding: var(--spacing-2) var(--spacing-6);
+	border-radius: var(--radius-md);
+	font-weight: 500;
+	font-size: var(--font-size-base);
+	transition: all var(--transition-base);
+	text-decoration: none;
+}
+
+.navbar-button:hover {
+	background-color: var(--background-secondary);
+	transform: translateY(-1px);
+	box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+	.search-container {
+		max-width: none;
+	}
+
+	.navbar-container {
+		padding: 0 var(--spacing-3);
+	}
+}
+
+@media (max-width: 640px) {
+	.navbar {
+		height: 3.5rem;
+	}
+
+	.navbar-brand {
+		font-size: var(--font-size-lg);
+	}
+
+	.search-filter {
+		display: none;
+	}
+
+	.navbar-button {
+		padding: var(--spacing-2) var(--spacing-4);
+		font-size: var(--font-size-sm);
+	}
+
+	.navbar-container {
+		padding: 0 var(--spacing-2);
+	}
+
+	.search-container {
+		margin: 0 var(--spacing-2);
+	}
+}
+
+.search-container {
+	display: flex;
+	flex: 1;
+	max-width: 600px;
+	gap: var(--spacing-2);
+	margin: 0 var(--spacing-4);
+}
+
+.search-wrapper {
+	position: relative;
+	width: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.search-input {
+	flex: 1;
+	width: 100%;
+	background-color: rgba(255, 255, 255, 0.15);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: var(--white);
+	padding: var(--spacing-2) var(--spacing-4);
+	padding-right: calc(var(--spacing-4) + 24px);
+	border-radius: var(--radius-md);
+	font-size: var(--font-size-base);
+	transition: all var(--transition-base);
+}
+
+.search-icon {
+	position: absolute;
+	right: var(--spacing-3);
+	width: 20px;
+	height: 20px;
+	color: rgba(255, 255, 255, 0.7);
+	pointer-events: none;
+}
+
+.navbar-button-logout {
+	background-color: transparent;
+	border: 1px solid var(--white);
+	color: var(--white);
+}
+
+.navbar-button-logout:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	transform: translateY(-1px);
+}
+
+.user-menu {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.user-name {
+	color: var(--white);
+	font-weight: 500;
+}
+
+.navbar-link {
+	color: var(--white);
+	text-decoration: none;
+	padding: 0.5rem 1rem;
+	border-radius: var(--radius-md);
+	transition: background-color 0.2s;
+}
+
+.navbar-link:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}

@@ -1,0 +1,86 @@
+.profile-container {
+  padding: 2rem;
+  padding-top: 5rem;
+}
+
+.profile-header {
+  margin-bottom: 2rem;
+}
+
+.profile-header h1 {
+  color: var(--text-primary);
+  font-size: var(--font-size-3xl);
+}
+
+.profile-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.profile-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.profile-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--background-secondary);
+}
+
+.profile-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.profile-section h3 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  font-size: var(--font-size-xl);
+}
+
+.info-group {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+
+.info-group label {
+  width: 120px;
+  color: var(--text-secondary);
+}
+
+.status-active {
+  color: var(--success);
+  font-weight: 500;
+}
+
+.profile-button {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.profile-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.preferences-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.preferences-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+} 
