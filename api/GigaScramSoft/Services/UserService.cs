@@ -84,8 +84,8 @@ namespace GigaScramSoft.Services
                 .FirstOrDefaultAsync(u => u.Login == login);
 
             return user != null
-                ? new ResponseModel<UserModel>(user, "Користувача знайдено", HttpStatusCode.OK)
-                : new ResponseModel<UserModel>(null!, "Користувача не знайдено", HttpStatusCode.NotFound);
+                ? new ResponseModel<UserModel>(user, "User found", HttpStatusCode.OK)
+                : new ResponseModel<UserModel>(null!, "User not found", HttpStatusCode.NotFound);
         }
 
         public async Task<ResponseModel<bool>> UpdatePassword(string username, string oldPassword, string newPassword)

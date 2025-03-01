@@ -7,10 +7,8 @@ using GigaScramSoft;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Налаштування HTTPS
 builder.WebHost.UseUrls("http://localhost:5050");
 
-// Налаштування CORS перед усіма іншими сервісами
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", builder =>
@@ -31,10 +29,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("GigaScramSoft")));
 builder.Services.AddTransient<IUserService, UserService>();
 
-//Додаємо конфігурацію AuthSettings
+//Add AuthSettings configuration
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 
-//Робота з JWT
+//Working with JWT
 builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
@@ -53,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Description = "Будь ласка, введіть токен у форматі: Bearer {token}",
+        Description = "Please enter the token in the format: Bearer {token}",
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
@@ -77,14 +75,14 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Порядок middleware важливий!
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// CORS має бути перед UseRouting
+// CORS must be before UseRouting
 app.UseCors("AllowFrontend");
 
 app.UseRouting();
