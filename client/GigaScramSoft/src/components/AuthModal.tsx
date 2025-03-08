@@ -25,6 +25,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
         <motion.div
           className="auth-modal-overlay"
           onClick={handleClose}
+          role="dialog"
+          aria-modal="true"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -44,15 +46,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
 
             <div className="auth-modal-header">
               <div className="auth-modal-tabs">
-                <button
+                <button 
                   className={`auth-tab ${mode === 'login' ? 'active' : ''}`}
                   onClick={() => setMode('login')}
+                  aria-pressed={mode === 'login'}
                 >
                   Login
                 </button>
-                <button
+                <button 
                   className={`auth-tab ${mode === 'signup' ? 'active' : ''}`}
                   onClick={() => setMode('signup')}
+                  aria-pressed={mode === 'signup'}
                 >
                   Sign Up
                 </button>

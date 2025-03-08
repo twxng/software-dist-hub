@@ -103,7 +103,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess, onSwitchToLogin }) =
   };
 
   return (
-    <form onSubmit={handleSubmit} className="auth-form">
+    <form className="auth-form" onSubmit={handleSubmit}>
       <div className="form-group">
         <label htmlFor="login">Login</label>
         <input
