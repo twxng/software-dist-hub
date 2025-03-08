@@ -38,7 +38,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'l
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", damping: 15 }}
           >
-            <button className="auth-modal-close" onClick={onClose}>
+            <button className="auth-modal-close" onClick={onClose} aria-label="Close">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M6 18L18 6M6 6l12 12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
