@@ -41,20 +41,20 @@ namespace GigaScramSoft.Controllers
             userModel.Login = login;
             userModel.PasswordHash = password;
 
-            var result = await _userService.CreateUser(userModel, "User");
+            var resultFromService = await _userService.CreateUser(userModel, "User");
             var userViewModel = new UserViewModel();
 
-            if (result.Data != null)
+            if (resultFromService.Data != null)
             {
-                userViewModel.Id = result.Data.Id;
-                userViewModel.Email = result.Data.Email;
-                userViewModel.Login = result.Data.Login;
-                userViewModel.RoleName = result.Data.Role.Name;
+                userViewModel.Id = resultFromService.Data.Id;
+                userViewModel.Email = resultFromService.Data.Email;
+                userViewModel.Login = resultFromService.Data.Login;
+                userViewModel.RoleName = resultFromService.Data.Role.Name;
             }
 
-            result.Data = userModel;
+            var result = new ResponseModel<UserViewModel>(userViewModel, "OK");
 
-            return StatusCode((int)result.StatusCode, result);
+            return StatusCode((int)resultFromService.StatusCode, result);
         }
 
         [HttpGet("GetProfile")]
