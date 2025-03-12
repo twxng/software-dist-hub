@@ -134,7 +134,7 @@ namespace GigaScramSoft.Services
                 var userByLogin = await _context.Users.FirstOrDefaultAsync(u => u.Login.Equals(userModel.Login));
                 if (userByLogin != null) throw new Exception($"User with the same login already exists!");
 
-                var userByEmail = await _context.Users.FirstOrDefaultAsync(u => u.Login.Equals(userModel.Email));
+                var userByEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(userModel.Email));
                 if (userByEmail != null) throw new Exception($"User with the same email already exists!");
 
                 var role = (await _context.Roles.ToListAsync()).Find((r) => { return r.Name.Equals(roleName); });
