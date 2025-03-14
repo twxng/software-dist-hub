@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.Extensions.Configuration;
 using System.Net;
 
 namespace GigaScramSoft.Services
@@ -31,7 +30,7 @@ namespace GigaScramSoft.Services
             {
                 new Claim("Login", user.Login),
                 new Claim("Email", user.Email),
-                new Claim("role", user.Role.Name),
+                new Claim("Role", user.Role.Name),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

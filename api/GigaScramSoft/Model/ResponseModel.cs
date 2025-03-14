@@ -14,7 +14,6 @@ namespace GigaScramSoft.Model
             Data = data;
             Message = message;
             StatusCode = statusCode;
-            Error = false;
         }
     }
 }

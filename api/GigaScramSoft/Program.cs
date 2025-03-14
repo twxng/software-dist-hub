@@ -1,33 +1,32 @@
-﻿using GigaScramSoft.Auth;
+﻿using GigaScramSoft;
+using GigaScramSoft.Auth;
 using GigaScramSoft.Services;
-using GigaScramSoft.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using GigaScramSoft;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://localhost:5050");
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", builder =>
-    {
-        builder
-            .WithOrigins(
-                "http://localhost:5173",  // Development
-                "http://localhost:4173"   // Production
-            )
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
+//builder.WebHost.UseUrls("http://localhost:5050");
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowFrontend", builder =>
+//    {
+//        builder
+//            .WithOrigins(
+//                "http://localhost:5173",  // Development
+//                "http://localhost:4173"   // Production
+//            )
+//            .AllowAnyMethod()
+//            .AllowAnyHeader()
+//            .AllowCredentials();
+//    });
+//});
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("GigaScramSoft")));
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IContentUnitService, ContentService>();
 
 //Add AuthSettings configuration
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
@@ -84,11 +83,8 @@ if (app.Environment.IsDevelopment())
 
 // CORS must be before UseRouting
 app.UseCors("AllowFrontend");
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
