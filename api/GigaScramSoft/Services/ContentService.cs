@@ -134,7 +134,7 @@ namespace GigaScramSoft.Services
         {
             try
             {
-                var categories = await _context.ContentUnitSubCategories.ToListAsync();
+                var categories = await _context.ContentUnitSubCategories.Include(sc => sc.MainCategory).ToListAsync();
                 return new ResponseModel<List<ContentUnitSubCategoryModel>>(categories, "OK", System.Net.HttpStatusCode.OK);
             }
             catch (Exception ex)

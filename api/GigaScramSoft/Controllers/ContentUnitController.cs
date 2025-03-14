@@ -62,5 +62,12 @@ namespace GigaScramSoft.Controllers
             var result = await _contentUnitService.DeleteContentUnit(contentId);
             return StatusCode((int)result.StatusCode, result);
         }
+
+        [HttpGet("GetAllCategories")]
+        public async Task<ActionResult<ResponseModel<List<ContentUnitSubCategoryModel>>>> GetAllCategories()
+        {
+            var result = await _contentUnitService.GetAllCategories();
+            return StatusCode((int)result.StatusCode, result);
+        }
     }
 }
