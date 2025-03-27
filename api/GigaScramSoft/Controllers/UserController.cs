@@ -62,7 +62,7 @@ namespace GigaScramSoft.Controllers
         public async Task<ActionResult<ResponseModel<UserViewModel>>> GetProfile()
         {
             var userLogin = User.FindFirst("Login").Value;
-            var result = await _userService.GetUserByUsername(userLogin);
+            var result = await _userService.GetUserByLogin(userLogin);
 
             UserViewModel userViewModel = new UserViewModel();
             userViewModel.Id = result.Data.Id;

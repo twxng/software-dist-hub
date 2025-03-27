@@ -9,11 +9,12 @@ namespace GigaScramSoft.Model
         public T? Data { get; set; }
         public bool Error { get; set; }
 
-        public ResponseModel(T? data = default, string? message = null, HttpStatusCode statusCode = HttpStatusCode.OK)
+        public ResponseModel(T? data = default, string? message = null, HttpStatusCode statusCode = HttpStatusCode.OK, bool error = false)
         {
             Data = data;
             Message = message;
             StatusCode = statusCode;
+            Error = error;
         }
     }
 }

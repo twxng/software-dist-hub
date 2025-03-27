@@ -1,13 +1,13 @@
 ﻿using System.Text;
-using GigaScramSoft.Auth;
-using GigaScramSoft.Model;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Net;
+using GigaScramSoft.Auth;
+using GigaScramSoft.Model;
 
 namespace GigaScramSoft.Services
 {
@@ -152,11 +152,6 @@ namespace GigaScramSoft.Services
                 var response = new ResponseModel<UserModel>(null, $"{ex.Message}", System.Net.HttpStatusCode.InternalServerError);
                 return await Task.FromResult(response);
             }
-        }
-
-        public async Task<ResponseModel<UserModel>> GetUserByUsername(string username)
-        {
-            return await GetUserByLogin(username);
         }
     }
 }
