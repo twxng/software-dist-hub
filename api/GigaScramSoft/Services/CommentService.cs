@@ -17,8 +17,12 @@ namespace GigaScramSoft.Services
         {
             try
             {
+                commentModel.DateTime = DateTime.Now;
                 await appDbContext.AddAsync(commentModel);
                 await appDbContext.SaveChangesAsync();
+
+                commentModel.ContentUnit.PreviewImage = null;
+                commentModel.ContentUnit.Images = null;
 
                 return new ResponseModel<CommentModel>(
                                                         commentModel,

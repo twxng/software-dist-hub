@@ -24,10 +24,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("GigaScramSoft")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("GigaScramSoft")));
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IContentUnitService, ContentService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<IScoreService, ScoreService>();
 
 //Add AuthSettings configuration
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));

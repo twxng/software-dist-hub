@@ -4,6 +4,7 @@ using GigaScramSoft;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GigaScramSoft.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250331140536_AddScoreModel")]
+    partial class AddScoreModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,9 +35,6 @@ namespace GigaScramSoft.Migrations
 
                     b.Property<int>("ContentUnitId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -57,7 +57,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 1,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3,
                             Value = "Windows 7 was a major improvement over Vista."
                         },
@@ -65,7 +64,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 2,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 4,
                             Value = "Many businesses still used Windows 7 even after its end of support."
                         },
@@ -73,7 +71,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 3,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 5,
                             Value = "Windows 7 had a simple yet effective user interface."
                         },
@@ -81,7 +78,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 4,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3,
                             Value = "The Aero design in Windows 7 was visually appealing."
                         },
@@ -89,7 +85,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 5,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 8, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 4,
                             Value = "Windows 7 introduced the Libraries feature for file organization."
                         },
@@ -97,7 +92,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 6,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 5,
                             Value = "Unlike Windows Vista, Windows 7 ran smoothly even on older hardware."
                         },
@@ -105,7 +99,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 7,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3,
                             Value = "Gaming performance on Windows 7 was significantly better than Vista."
                         },
@@ -113,7 +106,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 8,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 1, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 4,
                             Value = "Windows 7 had built-in support for touchscreens."
                         },
@@ -121,7 +113,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 9,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 3, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 5,
                             Value = "The taskbar in Windows 7 allowed pinning apps for quick access."
                         },
@@ -129,7 +120,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 10,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3,
                             Value = "Many people upgraded directly from Windows XP to Windows 7."
                         },
@@ -137,7 +127,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 11,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 2, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 4,
                             Value = "Windows 7 was the last Microsoft OS to include the classic Start menu design."
                         },
@@ -145,7 +134,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 12,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 1, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 5,
                             Value = "Security updates for Windows 7 stopped in 2020, making upgrades necessary."
                         },
@@ -153,7 +141,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 13,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 2, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3,
                             Value = "The Windows 7 backup and restore feature was quite handy."
                         },
@@ -161,7 +148,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 14,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 6, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 4,
                             Value = "Many enterprises paid for extended Windows 7 security updates."
                         },
@@ -169,7 +155,6 @@ namespace GigaScramSoft.Migrations
                         {
                             Id = 15,
                             ContentUnitId = 1,
-                            DateTime = new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 5,
                             Value = "Windows 7 supported DirectX 11, improving gaming graphics."
                         });

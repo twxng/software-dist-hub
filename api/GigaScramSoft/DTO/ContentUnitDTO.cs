@@ -1,4 +1,6 @@
-﻿namespace GigaScramSoft.DTO
+﻿using GigaScramSoft.Model;
+
+namespace GigaScramSoft.DTO
 {
     public class ContentUnitDTO
     {
@@ -9,5 +11,18 @@
         public string DownloadLink { get; set; }
         public string SubCategoryName { get; set; }
         public List<string> Images { get; set; }
+        public ContentUnitDTO()
+        {
+            
+        }
+        public ContentUnitDTO(ContentUnitModel contentUnitModel)
+        {
+            Header = contentUnitModel.Header;
+            ShortDescription = contentUnitModel.ShortDescription;
+            FullDescription = contentUnitModel.FullDescription;
+            PreviewImage = contentUnitModel.PreviewImage;
+            DownloadLink = contentUnitModel.DownloadLink;
+            SubCategoryName = contentUnitModel.SubCategory.Name;
+        }
     }
 }
