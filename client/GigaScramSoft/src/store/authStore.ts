@@ -17,63 +17,83 @@ interface AuthState {
   clearError: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: !!localStorage.getItem('token'),
-  userRole: null,
-  token: localStorage.getItem('token'),
-  error: null,
-  isLoading: false,
-  connectionStatus: {
-    isConnected: false,
-    language: null
-  },
+export const useAuthStore = create<AuthState>((set) => {
+  // Отримуємо токен з localStorage
+  const token = localStorage.getItem('token');
+  
+  // Якщо є токен, декодуємо його для отримання ролі
+  let initialUserRole = null;
+  if (token) {
+    const decodedToken = decodeJWT(token);
+    initialUserRole = decodedToken?.Role || null;
+  }
+  
+  return {
+    isAuthenticated: !!token,
+    userRole: initialUserRole,
+    token: token,
+    error: null,
+    isLoading: false,
+    connectionStatus: {
+      isConnected: false,
+      language: null
+    },
 
-  login: async (login: string, password: string) => {
-    try {
-      set({ isLoading: true, error: null });
-      
-      const response = await apiService.login({ login, password });
+    login: async (login: string, password: string) => {
+      try {
+        set({ isLoading: true, error: null });
+        
+        const response = await apiService.login({ login, password });
 
-      if (response.statusCode === 200 && response.data) {
-        const token = response.data;
-        localStorage.setItem('token', token);
-        
-				// Decode the JWT token, get the role
-        const decodedToken = decodeJWT(token);
-        const userRole = decodedToken?.role || null;
-        
-        set({
-          isAuthenticated: true,
-          token: token,
-          userRole: userRole,
-          error: null
+        if (response.statusCode === 200 && response.data) {
+          const token = response.data;
+          localStorage.setItem('token', token);
+          
+          const decodedToken = decodeJWT(token);
+          const userRole = decodedToken?.Role || null;
+          
+          console.log('Decoded token:', decodedToken);
+          console.log('User role:', userRole);
+          
+          set({
+            isAuthenticated: true,
+            token: token,
+            userRole: userRole,
+            error: null
+          });
+
+          console.log('State after login:', {
+            isAuthenticated: true,
+            userRole: userRole,
+            token: token.substring(0, 20) + '...' 
+          });
+        } else {
+          throw new Error(response.message || 'Authentication failed');
+        }
+      } catch (error) {
+        set({ 
+          error: error instanceof Error ? error.message : 'Unknown error',
+          isAuthenticated: false,
+          token: null,
+          userRole: null
         });
-      } else {
-        throw new Error(response.message || 'Authentication failed');
+        throw error;
+      } finally {
+        set({ isLoading: false });
       }
-    } catch (error) {
+    },
+
+    logout: () => {
+      localStorage.removeItem('token');
       set({ 
-        error: error instanceof Error ? error.message : 'Unknown error',
-        isAuthenticated: false,
-        token: null,
-        userRole: null
+        token: null, 
+        userRole: null, 
+        error: null, 
+        isLoading: false, 
+        isAuthenticated: false 
       });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
+    },
 
-  logout: () => {
-    localStorage.removeItem('token');
-    set({ 
-      token: null, 
-      userRole: null, 
-      error: null, 
-      isLoading: false, 
-      isAuthenticated: false 
-    });
-  },
-
-  clearError: () => set({ error: null })
-}));
+    clearError: () => set({ error: null })
+  };
+});

@@ -54,7 +54,7 @@ const Navbar = () => {
         <div className="navbar-right">
           {isAuthenticated ? (
             <div className="user-menu">
-              <span className="user-name">{userLogin}</span>
+              {/* <span className="user-name">{userLogin}</span> */}
               {userRole === 'Admin' && (
                 <Link to="/admin" className="navbar-link">
                   Admin Panel

@@ -20,7 +20,6 @@ const Sidebar: FC<SidebarProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
         <div className="sidebar-content">
-          {/* Add your catalog categories here */}
         </div>
       </div>
     </>

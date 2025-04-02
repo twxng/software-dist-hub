@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { LoginRequest, LoginResponse, UserProfile, ApiResponse } from '../types/api.types';
-import { useAuthStore } from '../store/authStore';
 
 interface SignUpRequest {
   login: string;
@@ -23,7 +22,28 @@ class ApiService {
       withCredentials: true
     });
 
-    this.setupInterceptors();
+    this.api.interceptors.request.use((config) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const tokenValue = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+        config.headers.Authorization = tokenValue;
+				console.log('Added token to headers:', config.headers.Authorization);
+      } else {
+				console.warn('Token is not in localStorage');
+      }
+      return config;
+    });
+
+    this.api.interceptors.response.use(
+      (response) => response,
+      (error: AxiosError) => {
+        if (error.response?.status === 401) {
+          localStorage.removeItem('token');
+          window.location.href = '/';
+        }
+        return Promise.reject(error);
+      }
+    );
   }
 
   public static getInstance(): ApiService {
@@ -31,30 +51,6 @@ class ApiService {
       ApiService.instance = new ApiService();
     }
     return ApiService.instance;
-  }
-
-  private setupInterceptors(): void {
-    this.api.interceptors.request.use(
-      (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
-
-    this.api.interceptors.response.use(
-      (response) => response,
-      (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          useAuthStore.getState().logout();
-        }
-        return Promise.reject(error);
-      }
-    );
   }
 
   public async login(credentials: LoginRequest): Promise<ApiResponse<string>> {
@@ -67,7 +63,13 @@ class ApiService {
       });
       
       if (response.data.statusCode === 200 && response.data.data) {
-        localStorage.setItem('token', response.data.data);
+        const token = response.data.data;
+        if (token.startsWith('Bearer ')) {
+          localStorage.setItem('token', token);
+        } else {
+          localStorage.setItem('token', token);
+        }
+        console.log('Збережений токен:', localStorage.getItem('token'));
       }
       
       return response.data;
@@ -94,16 +96,74 @@ class ApiService {
       if (error instanceof AxiosError && error.response?.status === 400) {
         return error.response.data as ApiResponse<UserProfile>;
       }
-      const message = (error as any)?.response?.data?.message || 'Registration failed';
-      return new Error(message);
+      return {
+        data: null as unknown as UserProfile,
+        message: (error as Error & { response?: { data?: { message?: string }, status?: number } })?.response?.data?.message || 'Реєстрація не вдалася',
+        statusCode: (error as Error & { response?: { data?: { message?: string }, status?: number } })?.response?.status || 500
+      };
+    }
+  }
+
+  public async get<T>(url: string): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.api.get(url);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error as AxiosError);
+    }
+  }
+
+  // public async post<T>(url: string, data: any): Promise<ApiResponse<T>> {
+  //   try {
+  //     const response = await this.api.post(url, data);
+  //     return response.data;
+  //   } catch (error) {
+  //     throw this.handleError(error as AxiosError);
+  //   }
+  // }
+
+	public async post<T>(url: string, data: Record<string, unknown>, config = {}): Promise<ApiResponse<T>> {
+		try {
+			const response = await this.api.post(url, data, { ...config });
+			return response.data;
+		} catch (error) {
+			throw this.handleError(error as AxiosError);
+		}
+	}
+
+
+  public async put<T>(url: string, data: Record<string, unknown>): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.api.put(url, data);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error as AxiosError);
+    }
+  }
+
+  public async delete<T>(url: string): Promise<ApiResponse<T>> {
+    try {
+      const response = await this.api.delete(url);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error as AxiosError);
     }
   }
 
   private handleError(error: AxiosError): Error {
-    if (error.response?.status === 500) {
-      return new Error('Invalid login or password');
+    if (error.response?.status === 401) {
+			return new Error('Authorization required');
     }
-    const message = (error.response?.data as any)?.message || 'Request failed';
+    
+    if (error.response?.status === 500) {
+      const requestUrl = error.config?.url || '';
+      if (requestUrl.includes('Login')) {
+				return new Error('Invalid login or password');
+      }
+      return new Error('Server side Error');
+    }
+    
+    const message = (error.response?.data as { message?: string })?.message || 'Failed Request';
     return new Error(message);
   }
 }

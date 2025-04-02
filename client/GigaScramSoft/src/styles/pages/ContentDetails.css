@@ -1,0 +1,454 @@
+.content-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.content-details-header {
+  display: flex;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.content-details-header h1 {
+	margin: 0 auto;
+	font-size: 2.5rem;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.back-button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 20px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+.content-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.content-details-main-image {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+.content-details-main-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.content-details-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.content-details-section {
+  margin-bottom: 20px;
+}
+
+.content-details-section h2 {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.content-short-description {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.content-full-description {
+  line-height: 1.6;
+}
+
+.download-button {
+  display: inline-block;
+  background-color: #3B5998;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background-color: #3B5998;
+}
+
+.content-details-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 120px;
+  height: 120px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.3s, transform 0.2s;
+}
+
+.thumbnail:hover {
+  border-color: #4CAF50;
+  transform: scale(1.05);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-details-tech-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+}
+
+.tech-info-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.tech-info-label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.content-details-loading,
+.content-details-error,
+.content-details-not-found {
+  text-align: center;
+  padding: 3rem;
+  margin: 2rem auto;
+  max-width: 800px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-details-error {
+  color: #dc3545;
+  border-left: 4px solid #dc3545;
+}
+
+.content-details-not-found {
+  color: #6c757d;
+  border-left: 4px solid #6c757d;
+}
+
+/* Стилі для модального вікна */
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.image-modal-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  display: block;
+  border-radius: 4px;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+/* Адаптивний дизайн */
+@media (max-width: 768px) {
+  .content-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .content-details-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .content-details-header h1 {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+  
+  .thumbnail {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .image-modal-content {
+    max-width: 95%;
+  }
+  
+  .modal-close-button {
+    top: -30px;
+    right: 0;
+  }
+}
+
+/* Стилі для секції коментарів */
+.content-comments-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.content-comments-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+/* Форма додавання коментаря */
+.comment-form {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-input {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 100px;
+  margin-bottom: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.comment-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 89, 152, 0.2);
+}
+
+.comment-submit-button {
+  align-self: flex-end;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.comment-submit-button:hover {
+  background-color: #344e86;
+  transform: translateY(-2px);
+}
+
+.comment-submit-button:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.comment-login-prompt {
+  text-align: center;
+  padding: 1rem;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.comment-login-prompt a {
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+/* Контейнер коментарів */
+.comments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.comments-loading, .comments-error, .no-comments {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  color: #64748b;
+}
+
+.comments-error {
+  color: #dc2626;
+}
+
+.comments-info {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Стилі для окремого коментаря */
+.comment-item {
+  padding: 1.25rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+  border-left: 4px solid var(--primary-color);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.comment-author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 0.75rem;
+  font-size: 1rem;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-right: auto;
+}
+
+.comment-date {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.comment-text {
+  line-height: 1.6;
+  color: #1e293b;
+  word-break: break-word;
+}
+
+.comment-delete-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: transparent;
+  color: #dc2626;
+  border: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.comment-delete-button:hover {
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+/* Пагінація коментарів */
+.comments-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.pagination-button {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.pagination-button:disabled {
+  background-color: #f1f5f9;
+  color: #a0aec0;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: #64748b;
+  padding: 0.5rem 1rem;
+  background-color: #f1f5f9;
+  border-radius: 4px;
+}
+
+/* Додаємо іконки для пагінації */
+.pagination-button.prev::before {
+  content: "←";
+  margin-right: 0.5rem;
+}
+
+.pagination-button.next::after {
+  content: "→";
+  margin-left: 0.5rem;
+} 
