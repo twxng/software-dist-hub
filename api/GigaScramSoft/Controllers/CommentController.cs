@@ -37,9 +37,9 @@ namespace GigaScramSoft.Controllers
 
                 if (user == null)
                 {
-                    return StatusCode((int)System.Net.HttpStatusCode.InternalServerError,
+                    return StatusCode((int)HttpStatusCode.InternalServerError,
                                        new ResponseModel<ContentUnitModel>(null, "There is no user with such login!",
-                                       System.Net.HttpStatusCode.InternalServerError));
+                                       HttpStatusCode.InternalServerError));
                 }
                 else
                 {

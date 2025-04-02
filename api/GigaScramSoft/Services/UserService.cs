@@ -28,6 +28,7 @@ namespace GigaScramSoft.Services
         {
             var claims = new List<Claim>
             {
+                new Claim("Id", user.Id.ToString()),
                 new Claim("Login", user.Login),
                 new Claim("Email", user.Email),
                 new Claim("Role", user.Role.Name),
@@ -144,12 +145,12 @@ namespace GigaScramSoft.Services
                 await _context.Users.AddAsync(userModel);
                 await _context.SaveChangesAsync();
 
-                var response = new ResponseModel<UserModel>(userModel, $"User has been created successfully!", System.Net.HttpStatusCode.OK);
+                var response = new ResponseModel<UserModel>(userModel, $"User has been created successfully!", HttpStatusCode.OK);
                 return response;
             }
             catch (Exception ex)
             {
-                var response = new ResponseModel<UserModel>(null, $"{ex.Message}", System.Net.HttpStatusCode.InternalServerError);
+                var response = new ResponseModel<UserModel>(null, $"{ex.Message}", HttpStatusCode.InternalServerError);
                 return await Task.FromResult(response);
             }
         }

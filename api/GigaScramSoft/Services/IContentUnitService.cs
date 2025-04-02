@@ -14,5 +14,6 @@ namespace GigaScramSoft.Services
         Task<ResponseModel<List<ContentUnitModel>>> GetAllContentUnits();
         Task<ResponseModel<List<ContentUnitModel>>> GetContentUnitsBySubCategoryId(int subCategoryId);
         Task<ResponseModel<List<ContentUnitModel>>> GetContentUnitsBySubCategoryName(string subCategoryName);
+        Task<ResponseModel<ContentPageDTO>> GetContentPageDTO(int numberOfPage, int unitsPerPage, int subCategoryId, string searchPattern);
     }
 }

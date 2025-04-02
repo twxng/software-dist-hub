@@ -10,9 +10,11 @@ namespace GigaScramSoft.Controllers
     public class ContentUnitController : ControllerBase
     {
         private IContentUnitService _contentUnitService;
-        public ContentUnitController(IContentUnitService contentUnitService)
+        private IScoreService _scoreService;
+        public ContentUnitController(IContentUnitService contentUnitService, IScoreService scoreService)
         {
             _contentUnitService = contentUnitService;
+            _scoreService = scoreService;
         }
 
         [HttpPost("Create")]
@@ -55,7 +57,6 @@ namespace GigaScramSoft.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-
         [HttpDelete("DeleteById")]
         public async Task<ActionResult<ResponseModel<bool>>> DeleteById(int contentId)
         {
@@ -67,6 +68,36 @@ namespace GigaScramSoft.Controllers
         public async Task<ActionResult<ResponseModel<List<ContentUnitSubCategoryModel>>>> GetAllCategories()
         {
             var result = await _contentUnitService.GetAllCategories();
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpPut("SetScore")]
+        [Authorize]
+        public async Task<ActionResult<ResponseModel<bool>>> SetScore(int contentUnit, bool IsPositive)
+        {
+            var userId = int.Parse(User.FindFirst("Id")?.Value);
+            var result = await _scoreService.SetScore( userId, contentUnit, IsPositive);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpGet("GetScore")]
+        public async Task<ActionResult<ResponseModel<int>>> GetScore(int contentUnit)
+        {
+            var result = await _scoreService.GetTotalScore(contentUnit);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpGet("GetContentPage")]
+        public async Task<ActionResult<ResponseModel<int>>> GetContentPage(int pageNumber,  int subCategoryId)
+        {
+            var result = await _contentUnitService.GetContentPageDTO(pageNumber, unitsPerPage: 10, subCategoryId, searchPattern: string.Empty);
+            return StatusCode((int)result.StatusCode, result);
+        }
+
+        [HttpGet("SearchByName")]
+        public async Task<ActionResult<ResponseModel<int>>> GetContentPage(int pageNumber, int subCategoryId, string searchPattern)
+        {
+            var result = await _contentUnitService.GetContentPageDTO(pageNumber, unitsPerPage: 10, subCategoryId, searchPattern);
             return StatusCode((int)result.StatusCode, result);
         }
     }
