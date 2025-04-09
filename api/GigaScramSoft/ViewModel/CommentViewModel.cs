@@ -10,6 +10,7 @@ namespace GigaScramSoft.ViewModel
         public UserViewModel User { get; set; }
         public int ContentUnitId { get; set; }
         public ContentUnitModel ContentUnit { get; set; }
+        public DateTime DateTime { get; set; }
 
         public CommentViewModel(CommentModel commentModel)
         {
@@ -18,6 +19,7 @@ namespace GigaScramSoft.ViewModel
             UserId = commentModel.UserId;
             User = new UserViewModel(commentModel.User);
             ContentUnitId = commentModel.ContentUnitId;
+            DateTime = commentModel.DateTime;
         }
     }
 }

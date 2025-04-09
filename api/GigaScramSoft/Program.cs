@@ -6,9 +6,9 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.WebHost.UseUrls("http://localhost:5050");
-//builder.Services.AddCors(options =>
-//{
+// builder.WebHost.UseUrls("http://localhost:5050");
+// builder.Services.AddCors(options =>
+// {
 //    options.AddPolicy("AllowFrontend", builder =>
 //    {
 //        builder
@@ -20,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 //            .AllowAnyHeader()
 //            .AllowCredentials();
 //    });
-//});
+// });
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>

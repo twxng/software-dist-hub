@@ -272,26 +272,73 @@ namespace GigaScramSoft.Services
         {
             try
             {
-                var subCategory = await _context.ContentUnitSubCategories
+                List<ContentUnitModel> contentUnits;
+                ContentUnitSubCategoryModel subCategory = null;
+
+                if (subCategoryId > 0)
+                {
+                    subCategory = await _context.ContentUnitSubCategories
                                                 .Include(sc => sc.MainCategory)
                                                 .FirstOrDefaultAsync(sc => sc.Id == subCategoryId);
 
-                if (subCategory == null) throw new Exception("There is no category with such id.");
+                    if (subCategory == null) 
+                    {
+                        return new ResponseModel<ContentPageDTO>
+                        {
+                            Data = new ContentPageDTO
+                            {
+                                ContentUnits = new List<ContentUnitDTO>(),
+                                PageNumber = numberOfPage,
+                                TotalNumberOfPages = 0,
+                                IsTheLastPage = true,
+                                SubCategory = null
+                            },
+                            Error = true,
+                            Message = "There is no category with such id.",
+                            StatusCode = System.Net.HttpStatusCode.NotFound
+                        };
+                    }
 
-                var contentUnits = await _context.ContentUnits
+                    contentUnits = await _context.ContentUnits
                                                  .Include(cu => cu.SubCategory)
                                                  .Where(cu => cu.SubCategoryId == subCategoryId)
                                                  .OrderBy(cu => cu.Id)
                                                  .ToListAsync();
+                }
+                else
+                {
+                    contentUnits = await _context.ContentUnits
+                                                 .Include(cu => cu.SubCategory)
+                                                 .ThenInclude(sc => sc.MainCategory)
+                                                 .OrderBy(cu => cu.Id)
+                                                 .ToListAsync();
+                }
                 
-                if (!searchPattern.Equals(""))
+                if (!string.IsNullOrWhiteSpace(searchPattern))
                 {
                     contentUnits = contentUnits.Where(cu => cu.Header.Contains(searchPattern, StringComparison.CurrentCultureIgnoreCase))
                                                                      .ToList();
                 }
 
                 var contentPageDTO = new ContentPageDTO();
-                if (contentUnits.Count == 0) throw new Exception("There are no content units with such parameters.");
+                
+                if (contentUnits.Count == 0)
+                {
+                    return new ResponseModel<ContentPageDTO>
+                    {
+                        Data = new ContentPageDTO
+                        {
+                            ContentUnits = new List<ContentUnitDTO>(),
+                            PageNumber = numberOfPage,
+                            TotalNumberOfPages = 0,
+                            IsTheLastPage = true,
+                            SubCategory = subCategory
+                        },
+                        Error = false,
+                        Message = "No content units found with the given parameters.",
+                        StatusCode = System.Net.HttpStatusCode.OK
+                    };
+                }
 
                 if (contentUnits.Count > unitsPerPage)
                 {
@@ -304,7 +351,20 @@ namespace GigaScramSoft.Services
 
                 if (numberOfPage > contentPageDTO.TotalNumberOfPages || numberOfPage <= 0)
                 {
-                    throw new Exception("The number of page is higher than total number of pages.");
+                    return new ResponseModel<ContentPageDTO>
+                    {
+                        Data = new ContentPageDTO
+                        {
+                            ContentUnits = new List<ContentUnitDTO>(),
+                            PageNumber = 1,
+                            TotalNumberOfPages = contentPageDTO.TotalNumberOfPages,
+                            IsTheLastPage = true,
+                            SubCategory = subCategory
+                        },
+                        Error = true,
+                        Message = $"The page number {numberOfPage} is invalid. Total pages: {contentPageDTO.TotalNumberOfPages}",
+                        StatusCode = System.Net.HttpStatusCode.BadRequest
+                    };
                 }
                 else
                 {
