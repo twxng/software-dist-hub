@@ -1,35 +1,47 @@
 .content-details-container {
+  padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  position: relative;
+  margin-top: 100px;
 }
 
 .content-details-header {
   display: flex;
-  align-items: center;
-  margin-top: 100px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
 }
 
 .content-details-header h1 {
-	margin: 0 auto;
-	font-size: 2.5rem;
-	text-align: center;
-	margin-bottom: 30px;
+  margin: 0 auto;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .back-button {
-  background-color: #f0f0f0;
-  border: none;
   padding: 8px 16px;
+  background-color: #3b5998;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 20px;
-  font-weight: bold;
-  transition: background-color 0.3s;
+  font-size: 16px;
+  transition: background-color 0.2s;
 }
 
 .back-button:hover {
   background-color: #e0e0e0;
+}
+
+.content-title {
+  margin: 0;
+  font-size: 2em;
+  color: #333;
+  flex-grow: 1;
+  margin-left: 20px;
+  margin-right: 220px;
 }
 
 .content-details-grid {
@@ -43,7 +55,6 @@
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .content-details-main-image img {
@@ -80,7 +91,7 @@
 
 .download-button {
   display: inline-block;
-  background-color: #3B5998;
+  background-color: #3b5998;
   color: white;
   padding: 10px 20px;
   text-decoration: none;
@@ -90,7 +101,7 @@
 }
 
 .download-button:hover {
-  background-color: #3B5998;
+  background-color: #3b5998;
 }
 
 .content-details-thumbnails {
@@ -111,7 +122,7 @@
 }
 
 .thumbnail:hover {
-  border-color: #4CAF50;
+  border-color: #4caf50;
   transform: scale(1.05);
 }
 
@@ -160,7 +171,6 @@
   border-left: 4px solid #6c757d;
 }
 
-/* Стилі для модального вікна */
 .image-modal-overlay {
   position: fixed;
   top: 0;
@@ -198,38 +208,36 @@
   cursor: pointer;
 }
 
-/* Адаптивний дизайн */
 @media (max-width: 768px) {
   .content-details-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .content-details-header {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .content-details-header h1 {
     margin-left: 0;
     margin-top: 15px;
   }
-  
+
   .thumbnail {
     width: 100px;
     height: 100px;
   }
-  
+
   .image-modal-content {
     max-width: 95%;
   }
-  
+
   .modal-close-button {
     top: -30px;
     right: 0;
   }
 }
 
-/* Стилі для секції коментарів */
 .content-comments-section {
   margin-top: 2rem;
   padding: 1.5rem;
@@ -246,7 +254,6 @@
   padding-bottom: 0.5rem;
 }
 
-/* Форма додавання коментаря */
 .comment-form {
   margin-bottom: 2rem;
   display: flex;
@@ -307,14 +314,15 @@
   text-decoration: underline;
 }
 
-/* Контейнер коментарів */
 .comments-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.comments-loading, .comments-error, .no-comments {
+.comments-loading,
+.comments-error,
+.no-comments {
   text-align: center;
   padding: 2rem;
   background-color: #f1f5f9;
@@ -334,7 +342,6 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
-/* Стилі для окремого коментаря */
 .comment-item {
   padding: 1.25rem;
   background-color: white;
@@ -373,6 +380,12 @@
 .comment-date {
   font-size: 0.8rem;
   color: #64748b;
+  padding: 0.25rem 0.5rem;
+  background-color: #f1f5f9;
+  border-radius: 4px;
+  margin-left: auto;
+  white-space: nowrap;
+  font-weight: 500;
 }
 
 .comment-text {
@@ -399,7 +412,6 @@
   background-color: rgba(220, 38, 38, 0.1);
 }
 
-/* Пагінація коментарів */
 .comments-pagination {
   display: flex;
   align-items: center;
@@ -442,7 +454,6 @@
   border-radius: 4px;
 }
 
-/* Додаємо іконки для пагінації */
 .pagination-button.prev::before {
   content: "←";
   margin-right: 0.5rem;
@@ -451,4 +462,237 @@
 .pagination-button.next::after {
   content: "→";
   margin-left: 0.5rem;
-} 
+}
+
+.content-rating-section {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.rating-title {
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+  color: #2c3e50;
+  font-weight: 600;
+  border-bottom: 2px solid #3b5998;
+  padding-bottom: 8px;
+}
+
+.rating-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rating-stars {
+  margin-bottom: 8px;
+}
+
+.rating-score-container {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.rating-score {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #3b5998;
+}
+
+.rating-label {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.rating-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.rating-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.rating-button.upvote {
+  background-color: #3b5998;
+  color: white;
+}
+
+.rating-button.upvote:hover {
+  background-color: #2d4373;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 89, 152, 0.3);
+}
+
+.rating-button.downvote {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+.rating-button.downvote:hover {
+  background-color: #e2e8f0;
+  color: #475569;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(100, 116, 139, 0.15);
+}
+
+.rating-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.rating-button.auth-required {
+  opacity: 0.7;
+  background: linear-gradient(45deg, #f1f5f9, #f8fafc);
+  color: #94a3b8;
+  border: 1px dashed #cbd5e1;
+}
+
+.rating-button.auth-required:hover {
+  background: linear-gradient(45deg, #f1f5f9, #f8fafc);
+  transform: none;
+  box-shadow: none;
+}
+
+.rating-icon {
+  font-size: 1.25rem;
+}
+
+.rating-message {
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 0.95rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.rating-message.success {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-left: 4px solid #3b5998;
+}
+
+.rating-message.error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-left: 4px solid #ef4444;
+}
+
+.rating-auth-prompt {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #f1f5f9;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px dashed #cbd5e1;
+}
+
+.rating-auth-prompt p {
+  font-size: 0.95rem;
+  color: #475569;
+  margin: 0;
+}
+
+.rating-auth-prompt .login-link {
+  color: #3b5998;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.rating-auth-prompt .login-link:hover {
+  color: #2d4373;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .rating-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .rating-stars {
+    flex: 0 0 auto;
+    margin-right: 24px;
+  }
+
+  .rating-score-container {
+    flex: 0 0 auto;
+    margin-right: 24px;
+  }
+
+  .rating-actions {
+    flex: 1 0 auto;
+    justify-content: flex-end;
+  }
+
+  .rating-message,
+  .rating-auth-prompt {
+    flex: 0 0 100%;
+  }
+}
+
+.content-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.breadcrumb-item {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.breadcrumb-item:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.breadcrumb-item.current {
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: default;
+}
+
+.breadcrumb-item.current:hover {
+  text-decoration: none;
+}
+
+.breadcrumb-separator {
+  margin: 0 0.5rem;
+  color: var(--text-secondary);
+}

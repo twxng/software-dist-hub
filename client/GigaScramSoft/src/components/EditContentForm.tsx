@@ -3,7 +3,15 @@ import { ContentUnit, SubCategory, MainCategory, ContentUnitDTO } from '../types
 import { contentService } from '../services/contentService';
 import '../styles/components/EditContentForm.css';
 import { useAuthStore } from '../store/authStore';
+import { formatImageUrl, convertFileToBase64, revokeImageUrls, stripBase64Prefix } from '../utils/imageUtils';
 
+/**
+ * Props for the EditContentForm component.
+ * @interface EditContentFormProps
+ * @property {number} contentId - ID of the content to edit.
+ * @property {() => void} onSuccess - Function to call on successful edit.
+ * @property {() => void} onClose - Function to call when the form is closed.
+ */
 interface EditContentFormProps {
   contentId: number;
   onSuccess: () => void;
@@ -37,6 +45,13 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
     loadContent();
     loadCategories();
   }, [contentId]);
+
+  useEffect(() => {
+    return () => {
+      if (previewImageUrl) URL.revokeObjectURL(previewImageUrl);
+      revokeImageUrls(imageFilesUrls);
+    };
+  }, []);
 
   const loadContent = async () => {
     try {
@@ -81,7 +96,7 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
     }
   };
 
-  // Group subcategories by main categories
+  
   const mainCategories = useMemo(() => {
     const grouped = categories.reduce((acc, subCategory) => {
       const mainCategory = subCategory.mainCategory;
@@ -97,32 +112,6 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
     
     return Object.values(grouped);
   }, [categories]);
-
-  // Function to convert File to base64 string
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        try {
-          const base64 = reader.result as string;
-          console.log(`Image size ${file.name}: ${Math.round(base64.length / 1024)} KB`);
-          
-          if (base64.length > 1000000) { // 1MB limit
-            console.warn(`Image ${file.name} is too large (${Math.round(base64.length / 1024)} KB)`);
-          }
-          resolve(base64);
-        } catch (error) {
-          console.error('Error processing file:', error);
-          reject(error);
-        }
-      };
-      reader.onerror = error => {
-        console.error('Error reading file:', error);
-        reject(error);
-      };
-    });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,27 +133,33 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
     console.log('Additional images to upload:', imageFiles.length);
 
     try {
-      // Find selected subcategory
+      
       const selectedSubCategory = categories.find(cat => cat.id === formData.subCategoryId);
       
       if (!selectedSubCategory) {
         throw new Error('Please select a valid subcategory');
       }
 
-      // Convert preview file to base64
+      
       let previewImageBase64 = formData.previewImage;
       if (previewFile) {
-        previewImageBase64 = await convertFileToBase64(previewFile);
+        previewImageBase64 = await convertFileToBase64(previewFile, undefined, true);
+      } else if (previewImageBase64.startsWith('data:')) {
+        previewImageBase64 = stripBase64Prefix(previewImageBase64);
       }
 
-      // Convert additional images to base64
+      
       let imageBase64Array = [...formData.images];
       
-      // Check if there are additional images to process
+      imageBase64Array = imageBase64Array.map(img => 
+        img.startsWith('data:') ? stripBase64Prefix(img) : img
+      );
+      
+      
       if (imageFiles.length > 0) {
         console.log('Converting additional images to base64...');
         try {
-          const newImagesPromises = imageFiles.map(file => convertFileToBase64(file));
+          const newImagesPromises = imageFiles.map(file => convertFileToBase64(file, undefined, true));
           const newImagesBase64 = await Promise.all(newImagesPromises);
           console.log('Successfully converted images:', newImagesBase64.length);
           imageBase64Array = [...imageBase64Array, ...newImagesBase64];
@@ -174,7 +169,7 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
         }
       }
 
-      // Create object for API
+      
       const contentData: ContentUnitDTO = {
         header: formData.header,
         shortDescription: formData.shortDescription,
@@ -226,10 +221,10 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
       console.log('Selected additional images:', files.length);
       setImageFiles(files);
       
-      // Clear previous URLs
+      
       imageFilesUrls.forEach(url => URL.revokeObjectURL(url));
       
-      // Create new URLs for preview
+      
       const urls = files.map(file => URL.createObjectURL(file));
       setImageFilesUrls(urls);
     }
@@ -307,7 +302,7 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
               <div className="image-preview-container">
                 <div className="image-preview-title">Current Image:</div>
                 <img 
-                  src={previewImageUrl || formData.previewImage} 
+                  src={previewImageUrl || formatImageUrl(formData.previewImage)} 
                   alt="Preview" 
                   className="image-preview" 
                 />
@@ -387,7 +382,7 @@ const EditContentForm: React.FC<EditContentFormProps> = ({ contentId, onSuccess,
                 <div className="image-preview-title">Current Additional Images:</div>
                 <div className="additional-images-preview">
                   {formData.images.map((img, index) => (
-                    <img key={`existing-${index}`} src={img} alt={`Additional ${index}`} className="image-preview" />
+                    <img key={`existing-${index}`} src={formatImageUrl(img)} alt={`Additional ${index}`} className="image-preview" />
                   ))}
                   {imageFilesUrls.map((url, index) => (
                     <img key={`new-${index}`} src={url} alt={`New Additional ${index}`} className="image-preview" />

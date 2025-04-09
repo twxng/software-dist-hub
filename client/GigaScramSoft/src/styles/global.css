@@ -165,3 +165,9 @@ button:disabled, .button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.min-h-screen {
+  min-height: 100vh; /* Висота на всю сторінку */
+  display: flex;
+  flex-direction: column;
+}

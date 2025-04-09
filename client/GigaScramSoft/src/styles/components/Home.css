@@ -5,6 +5,7 @@
 width: 100%;
 	margin: 0;
   padding: 2rem;
+	margin-top: 100px;
 }
 
 .home-hero {
@@ -13,6 +14,8 @@ width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   margin-bottom: 3rem;
+	margin-top: -30px;
+	margin-bottom: -60px;
 }
 
 .home-subtitle {
@@ -261,4 +264,161 @@ width: 100%;
 
 .view-more-button:hover {
   background-color: #2a3f6d;
+}
+
+/* Updated styles for ratings with stars */
+.content-card-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.rating-stars-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rating-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #3B5998;
+}
+
+.rating-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rating-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.rating-button.upvote {
+  background-color: #3B5998;
+  color: white;
+}
+
+.rating-button.upvote:hover {
+  background-color: #2d4373;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(59, 89, 152, 0.3);
+}
+
+.rating-button.downvote {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+.rating-button.downvote:hover {
+  background-color: #e2e8f0;
+  color: #475569;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(100, 116, 139, 0.15);
+}
+
+.rating-button:active {
+  transform: scale(0.95);
+}
+
+.rating-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.rating-button.auth-required {
+  opacity: 0.7;
+  background: linear-gradient(45deg, #f1f5f9, #f8fafc);
+  color: #94a3b8;
+  border: 1px dashed #cbd5e1;
+}
+
+.rating-button.auth-required:hover {
+  background: linear-gradient(45deg, #f1f5f9, #f8fafc);
+  transform: none;
+  box-shadow: none;
+}
+
+.card-rating-message {
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  animation: fadeIn 0.3s ease-in-out;
+  width: 100%;
+}
+
+.card-rating-message.success {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-left: 4px solid #3B5998;
+}
+
+.card-rating-message.error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-left: 4px solid #ef4444;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 640px) {
+  .content-card-rating {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Стилі для спеціальних міток на популярних сторінках */
+.popular-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.popular-badge.rank-1 {
+  background-color: #ffd700; /* золотий */
+  color: #333;
+}
+
+.popular-badge.rank-2 {
+  background-color: #c0c0c0; /* срібний */
+  color: #333;
+}
+
+.popular-badge.rank-3 {
+  background-color: #cd7f32; /* бронзовий */
+  color: white;
 }

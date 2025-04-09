@@ -27,19 +27,92 @@ class ApiService {
       if (token) {
         const tokenValue = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
         config.headers.Authorization = tokenValue;
-				console.log('Added token to headers:', config.headers.Authorization);
+        
+        if (config.url?.includes('SetScore')) {
+          console.log(`%c[VOTING REQUEST] ${config.method?.toUpperCase()} ${config.url}`, 'background: #e0f7fa; color: #006064; font-weight: bold', {
+            tokenFirstChars: tokenValue.substring(0, 20) + '...',
+            params: config.params,
+            query: config.url.split('?')[1],
+            time: new Date().toISOString()
+          });
+        } else if (config.url?.includes('GetScore')) {
+          console.log(`%c[SCORE REQUEST] ${config.method?.toUpperCase()} ${config.url}`, 'background: #fff9c4; color: #827717; font-weight: bold', {
+            tokenFirstChars: tokenValue.substring(0, 20) + '...',
+            time: new Date().toISOString()
+          });
+        } else {
+          console.log(`Request to ${config.url}: Added token to headers`, {
+            tokenFirstChars: tokenValue.substring(0, 20) + '...',
+            method: config.method,
+            url: config.url,
+          });
+        }
       } else {
-				console.warn('Token is not in localStorage');
+        console.warn(`Request to ${config.url}: Token is not in localStorage`);
       }
       return config;
     });
 
     this.api.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        if (response.config.url?.includes('SetScore')) {
+          console.log(`%c[VOTING RESPONSE] ${response.config.url}`, 'background: #e8f5e9; color: #2e7d32; font-weight: bold', {
+            status: response.status,
+            statusText: response.statusText,
+            data: response.data,
+            isPositive: response.config.url.includes('isPositive=true'),
+            contentId: new URLSearchParams(response.config.url.split('?')[1]).get('contentId'),
+            time: new Date().toISOString()
+          });
+        } else if (response.config.url?.includes('GetScore')) {
+          console.log(`%c[SCORE RESPONSE] ${response.config.url}`, 'background: #fffde7; color: #f57f17; font-weight: bold', {
+            status: response.status,
+            statusText: response.statusText,
+            score: response.data.data,
+            contentId: new URLSearchParams(response.config.url.split('?')[1]).get('contentId'),
+            time: new Date().toISOString()
+          });
+        }
+        return response;
+      },
       (error: AxiosError) => {
+        console.error('API Error:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          url: error.config?.url,
+          method: error.config?.method,
+          message: error.message,
+          data: error.response?.data
+        });
+
+        if (error.config?.url?.includes('SetScore') || error.config?.url?.includes('GetScore')) {
+          console.error('Voting error details:', {
+            responseData: error.response?.data,
+            url: error.config?.url,
+            requestParams: error.config?.params
+          });
+          
+          return Promise.reject(error);
+        }
+
         if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          window.location.href = '/';
+          console.error('Unauthorized request:', {
+            url: error.config?.url,
+            method: error.config?.method,
+            status: error.response.status,
+            message: error.message
+          });
+          
+          if (!error.config?.url?.includes('SetScore') && 
+              !error.config?.url?.includes('GetScore')) {
+            localStorage.removeItem('token');
+            window.location.href = '/';
+          }
+        } else if (error.response?.status === 404) {
+          console.error('Resource not found:', {
+            url: error.config?.url, 
+            method: error.config?.method
+          });
         }
         return Promise.reject(error);
       }
@@ -152,7 +225,23 @@ class ApiService {
 
   private handleError(error: AxiosError): Error {
     if (error.response?.status === 401) {
-			return new Error('Authorization required');
+      const requestUrl = error.config?.url || '';
+      
+      if (requestUrl.includes('SetScore')) {
+        return new Error('Authentication required for voting');
+      }
+      
+      return new Error('Authorization required');
+    }
+    
+    if (error.response?.status === 404) {
+      const requestUrl = error.config?.url || '';
+      
+      if (requestUrl.includes('SetScore')) {
+        return new Error('Voting endpoint not found');
+      }
+      
+      return new Error('Resource not found');
     }
     
     if (error.response?.status === 500) {
@@ -160,6 +249,11 @@ class ApiService {
       if (requestUrl.includes('Login')) {
 				return new Error('Invalid login or password');
       }
+      
+      if (requestUrl.includes('SetScore')) {
+        return new Error('Server error while voting');
+      }
+      
       return new Error('Server side Error');
     }
     

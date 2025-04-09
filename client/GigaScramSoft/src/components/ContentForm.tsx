@@ -1,8 +1,20 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { ContentUnit, SubCategory, MainCategory, CreateContentRequest, ContentUnitDTO } from '../types/content';
-import { contentService } from '../services/contentService';
-import '../styles/components/ContentForm.css';
-import { useAuthStore } from '../store/authStore';
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  ContentUnit,
+  SubCategory,
+  MainCategory,
+  CreateContentRequest,
+  ContentUnitDTO,
+} from "../types/content";
+import { contentService } from "../services/contentService";
+import "../styles/components/ContentForm.css";
+import { useAuthStore } from "../store/authStore";
+import {
+  formatImageUrl,
+  convertFileToBase64,
+  revokeImageUrls,
+  stripBase64Prefix,
+} from "../utils/imageUtils";
 
 interface ContentFormProps {
   initialData?: ContentUnit;
@@ -10,15 +22,19 @@ interface ContentFormProps {
   onClose: () => void;
 }
 
-const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClose }) => {
+const ContentForm: React.FC<ContentFormProps> = ({
+  initialData,
+  onSubmit,
+  onClose,
+}) => {
   const [formData, setFormData] = useState<CreateContentRequest>({
-    header: '',
-    shortDescription: '',
-    fullDescription: '',
-    previewImage: '',
-    downloadLink: '',
+    header: "",
+    shortDescription: "",
+    fullDescription: "",
+    previewImage: "",
+    downloadLink: "",
     subCategoryId: 0,
-    images: []
+    images: [],
   });
 
   const [selectedMainCategory, setSelectedMainCategory] = useState<number>(0);
@@ -41,7 +57,7 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
         previewImage: initialData.previewImage,
         downloadLink: initialData.downloadLink,
         subCategoryId: initialData.subCategoryId,
-        images: initialData.images.map(img => img.value)
+        images: initialData.images.map((img) => img.value),
       });
       if (initialData.subCategory && initialData.subCategory.mainCategory) {
         setSelectedMainCategory(initialData.subCategory.mainCategory.id);
@@ -53,7 +69,7 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
   useEffect(() => {
     return () => {
       if (previewImageUrl) URL.revokeObjectURL(previewImageUrl);
-      imageFilesUrls.forEach(url => URL.revokeObjectURL(url));
+      revokeImageUrls(imageFilesUrls);
     };
   }, []);
 
@@ -61,117 +77,105 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
     try {
       setIsLoading(true);
       setError(null);
-      console.log('Loading categories...');
-      
+      console.log("Loading categories...");
+
       const response = await contentService.getCategories();
-      console.log('Received data:', response);
-      
+      console.log("Received data:", response);
+
       if (!response.data || !Array.isArray(response.data)) {
-        throw new Error('Received incorrect data');
+        throw new Error("Received incorrect data");
       }
 
       setCategories(response.data);
     } catch (err) {
-      console.error('Detailed error:', err);
-      setError(err instanceof Error ? err.message : 'Error loading categories');
+      console.error("Detailed error:", err);
+      setError(err instanceof Error ? err.message : "Error loading categories");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Group subcategories by main categories
   const mainCategories = useMemo(() => {
     const grouped = categories.reduce((acc, subCategory) => {
       const mainCategory = subCategory.mainCategory;
       if (!acc[mainCategory.id]) {
         acc[mainCategory.id] = {
           ...mainCategory,
-          subCategories: []
+          subCategories: [],
         };
       }
       acc[mainCategory.id].subCategories.push(subCategory);
       return acc;
     }, {} as Record<number, MainCategory & { subCategories: SubCategory[] }>);
-    
+
     return Object.values(grouped);
   }, [categories]);
 
-  // Function to convert File to base64 string with size limit
-  const convertFileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        try {
-          const base64 = reader.result as string;
-          console.log(`Розмір зображення ${file.name}: ${Math.round(base64.length / 1024)} KB`);
-          
-          if (base64.length > 10000000) { 
-            console.warn(`Зображення ${file.name} завелике (${Math.round(base64.length / 1024)} KB)`);
-          }
-          resolve(base64);
-        } catch (error) {
-          console.error('File processing error:', error);
-          reject(error);
-        }
-      };
-      reader.onerror = error => {
-        console.error('File reading error:', error);
-        reject(error);
-      };
-    });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!token) {
-      setError('You are not authorized. Please log in.');
+      setError("You are not authorized. Please log in.");
       return;
     }
-    
-    if (userRole !== 'Admin') {
-      setError('You do not have permission to create content. Admin role required.');
+
+    if (userRole !== "Admin") {
+      setError(
+        "You do not have permission to create content. Admin role required."
+      );
       return;
     }
-    
+
     setIsLoading(true);
     setError(null);
 
-    console.log('Authorization token:', localStorage.getItem('token'));
-    console.log('Additional images for downloading:', imageFiles.length);
+    console.log("Authorization token:", localStorage.getItem("token"));
+    console.log("Additional images for downloading:", imageFiles.length);
 
     try {
-      // Find selected subcategory
-      const selectedSubCategory = categories.find(cat => cat.id === formData.subCategoryId);
-      
+      const selectedSubCategory = categories.find(
+        (cat) => cat.id === formData.subCategoryId
+      );
+
       if (!selectedSubCategory) {
-        throw new Error('Please select a valid subcategory');
+        throw new Error("Please select a valid subcategory");
       }
 
-      // Convert preview file to base64
       let previewImageBase64 = formData.previewImage;
       if (previewFile) {
-        previewImageBase64 = await convertFileToBase64(previewFile);
+        previewImageBase64 = await convertFileToBase64(
+          previewFile,
+          undefined,
+          true
+        );
+      } else if (previewImageBase64.startsWith("data:")) {
+        previewImageBase64 = stripBase64Prefix(previewImageBase64);
       }
 
-      // Convert additional images to base64
       let imageBase64Array = [...formData.images];
-      
+
+      imageBase64Array = imageBase64Array.map((img) =>
+        img.startsWith("data:") ? stripBase64Prefix(img) : img
+      );
+
       if (imageFiles.length > 0) {
-        console.log('Конвертуємо додаткові зображення в base64...');
+        console.log("Конвертуємо додаткові зображення в base64...");
         try {
-          const newImagesPromises = imageFiles.map(file => convertFileToBase64(file));
+          const newImagesPromises = imageFiles.map((file) =>
+            convertFileToBase64(file, undefined, true)
+          );
           const newImagesBase64 = await Promise.all(newImagesPromises);
-          console.log('Успішно конвертовано зображень:', newImagesBase64.length);
+          console.log(
+            "Успішно конвертовано зображень:",
+            newImagesBase64.length
+          );
           imageBase64Array = [...imageBase64Array, ...newImagesBase64];
         } catch (conversionError) {
-          console.error('Помилка конвертації зображень:', conversionError);
-          throw new Error('Помилка обробки додаткових зображень');
+          console.error("Помилка конвертації зображень:", conversionError);
+          throw new Error("Помилка обробки додаткових зображень");
         }
       }
 
-      // Create object for API
       const contentData: ContentUnitDTO = {
         header: formData.header,
         shortDescription: formData.shortDescription,
@@ -179,37 +183,45 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
         previewImage: previewImageBase64,
         downloadLink: formData.downloadLink,
         subCategoryName: selectedSubCategory.name,
-        images: imageBase64Array
+        images: imageBase64Array,
       };
 
-      console.log('Send data with the number of additional images:', contentData.images.length);
+      console.log(
+        "Send data with the number of additional images:",
+        contentData.images.length
+      );
 
       let response;
       if (initialData?.id) {
-        response = await contentService.updateContent(initialData.id, contentData);
+        response = await contentService.updateContent(
+          initialData.id,
+          contentData
+        );
       } else {
         response = await contentService.createContent(contentData);
       }
-      
+
       if (!response.data) {
-        throw new Error(response.message || 'Failed to save content');
+        throw new Error(response.message || "Failed to save content");
       }
 
       onSubmit(response.data);
       onClose();
     } catch (err) {
-      console.error('Error saving content:', err);
-      setError(err instanceof Error ? err.message : 'Failed to save content');
+      console.error("Error saving content:", err);
+      setError(err instanceof Error ? err.message : "Failed to save content");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePreviewFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePreviewFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       setPreviewFile(file);
-      
+
       if (previewImageUrl) URL.revokeObjectURL(previewImageUrl);
       const url = URL.createObjectURL(file);
       setPreviewImageUrl(url);
@@ -219,34 +231,33 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
   const handleImagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
-      console.log('Обрано додаткових зображень:', files.length);
+      console.log("Обрано додаткових зображень:", files.length);
       setImageFiles(files);
-      
-      // Очищаємо попередні URL
-      imageFilesUrls.forEach(url => URL.revokeObjectURL(url));
-      
-      // Створюємо нові URL для попереднього перегляду
-      const urls = files.map(file => URL.createObjectURL(file));
+
+      imageFilesUrls.forEach((url) => URL.revokeObjectURL(url));
+
+      const urls = files.map((file) => URL.createObjectURL(file));
       setImageFilesUrls(urls);
     }
   };
 
   const handleMainCategoryChange = (mainCategoryId: number) => {
     setSelectedMainCategory(mainCategoryId);
-    setFormData(prev => ({ ...prev, subCategoryId: 0 }));
+    setFormData((prev) => ({ ...prev, subCategoryId: 0 }));
   };
 
   const handleSubCategoryChange = (subCategoryId: number) => {
-    setFormData(prev => ({ ...prev, subCategoryId }));
+    setFormData((prev) => ({ ...prev, subCategoryId }));
   };
 
-  if (isLoading && !categories.length) return <div className="loading">Loading...</div>;
+  if (isLoading && !categories.length)
+    return <div className="loading">Loading...</div>;
 
   return (
     <div className="content-form-overlay">
       <div className="content-form">
         {error && <div className="error-message">{error}</div>}
-        <h2>{initialData ? 'Edit Software' : 'Add New Software'}</h2>
+        <h2>{initialData ? "Edit Software" : "Add New Software"}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="header">Title*</label>
@@ -254,7 +265,9 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
               id="header"
               type="text"
               value={formData.header}
-              onChange={(e) => setFormData({ ...formData, header: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, header: e.target.value })
+              }
               required
               placeholder="Enter title"
             />
@@ -265,7 +278,9 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
             <textarea
               id="shortDescription"
               value={formData.shortDescription}
-              onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, shortDescription: e.target.value })
+              }
               required
               placeholder="Enter short description"
             />
@@ -276,7 +291,9 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
             <textarea
               id="fullDescription"
               value={formData.fullDescription}
-              onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, fullDescription: e.target.value })
+              }
               required
               className="full-description"
               placeholder="Enter full description"
@@ -295,11 +312,13 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
             />
             {(formData.previewImage || previewImageUrl) && (
               <div className="image-preview-container">
-                <div className="image-preview-title">Current Preview Image:</div>
-                <img 
-                  src={previewImageUrl || formData.previewImage} 
-                  alt="Preview" 
-                  className="image-preview" 
+                <div className="image-preview-title">
+                  Current Preview Image:
+                </div>
+                <img
+                  src={previewImageUrl || formatImageUrl(formData.previewImage)}
+                  alt="Preview"
+                  className="image-preview"
                 />
               </div>
             )}
@@ -311,7 +330,9 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
               id="downloadLink"
               type="url"
               value={formData.downloadLink}
-              onChange={(e) => setFormData({ ...formData, downloadLink: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, downloadLink: e.target.value })
+              }
               required
               placeholder="Enter download link"
             />
@@ -346,13 +367,14 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
               title="Select subcategory"
             >
               <option value="">Select subcategory</option>
-              {selectedMainCategory && mainCategories
-                .find(c => c.id === selectedMainCategory)
-                ?.subCategories.map(sub => (
-                  <option key={sub.id} value={sub.id}>
-                    {sub.name}
-                  </option>
-                ))}
+              {selectedMainCategory &&
+                mainCategories
+                  .find((c) => c.id === selectedMainCategory)
+                  ?.subCategories.map((sub) => (
+                    <option key={sub.id} value={sub.id}>
+                      {sub.name}
+                    </option>
+                  ))}
             </select>
           </div>
 
@@ -368,13 +390,25 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
             />
             {(formData.images.length > 0 || imageFilesUrls.length > 0) && (
               <div className="image-preview-container">
-                <div className="image-preview-title">Current Additional Images:</div>
+                <div className="image-preview-title">
+                  Current Additional Images:
+                </div>
                 <div className="additional-images-preview">
                   {formData.images.map((img, index) => (
-                    <img key={`existing-${index}`} src={img} alt={`Additional ${index}`} className="image-preview" />
+                    <img
+                      key={`existing-${index}`}
+                      src={formatImageUrl(img)}
+                      alt={`Additional ${index}`}
+                      className="image-preview"
+                    />
                   ))}
                   {imageFilesUrls.map((url, index) => (
-                    <img key={`new-${index}`} src={url} alt={`New Additional ${index}`} className="image-preview" />
+                    <img
+                      key={`new-${index}`}
+                      src={url}
+                      alt={`New Additional ${index}`}
+                      className="image-preview"
+                    />
                   ))}
                 </div>
               </div>
@@ -382,18 +416,10 @@ const ContentForm: React.FC<ContentFormProps> = ({ initialData, onSubmit, onClos
           </div>
 
           <div className="form-actions">
-            <button 
-              type="submit" 
-              className="btn-submit" 
-              disabled={isLoading}
-            >
-              {isLoading ? 'Saving...' : (initialData ? 'Save' : 'Add')}
+            <button type="submit" className="btn-submit" disabled={isLoading}>
+              {isLoading ? "Saving..." : initialData ? "Save" : "Add"}
             </button>
-            <button 
-              type="button" 
-              className="btn-cancel" 
-              onClick={onClose}
-            >
+            <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>
           </div>

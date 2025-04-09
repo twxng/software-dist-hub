@@ -53,7 +53,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     }
 
     try {
-      await login(formData.login, formData.password, formData.rememberMe);
+      await login(formData.login, formData.password);
       if (formData.rememberMe) {
         localStorage.setItem('rememberedLogin', formData.login);
       }

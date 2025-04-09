@@ -29,6 +29,8 @@ export interface ContentUnit {
   creationDate: string;
   downloadLink: string;
   subCategoryId: number;
+  score: number;
+  rating?: number;
   subCategory?: {
     id: number;
     name: string;
@@ -80,4 +82,14 @@ export interface CreateContentRequest {
   downloadLink: string;
   subCategoryId: number;
   images: string[];
+}
+
+export interface ContentItem {
+  id: string;
+  title: string;
+  description: string;
+  version: string;
+  rating: number;
+  icon?: string;
+  downloadedAt?: Date;
 }

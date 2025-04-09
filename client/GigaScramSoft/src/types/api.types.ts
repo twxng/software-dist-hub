@@ -19,5 +19,16 @@ export interface ApiResponse<T> {
 export interface UserProfile {
   id: string;
   login: string;
+  email?: string;
   roleName: string;
+  avatar?: string;
+  createdAt?: string;
+}
+
+export interface UpdateProfileRequest {
+  login?: string;
+  email?: string;
+  currentPassword?: string;
+  newPassword?: string;
+  avatar?: string;
 } 
