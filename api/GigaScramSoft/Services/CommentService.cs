@@ -21,8 +21,11 @@ namespace GigaScramSoft.Services
                 await appDbContext.AddAsync(commentModel);
                 await appDbContext.SaveChangesAsync();
 
-                commentModel.ContentUnit.PreviewImage = null;
-                commentModel.ContentUnit.Images = null;
+                if (commentModel.ContentUnit != null)
+                {
+                    commentModel.ContentUnit.PreviewImage = "";
+                    commentModel.ContentUnit.Images = new List<ContentUnitImageModel>();
+                }
 
                 return new ResponseModel<CommentModel>(
                                                         commentModel,
@@ -101,10 +104,26 @@ namespace GigaScramSoft.Services
         {
             try
             {
-                var comments = (await GetCommentsByContentUnitId(contentModelId)).Data;
+                var commentsResponse = await GetCommentsByContentUnitId(contentModelId);
+                var comments = commentsResponse.Data;
                 var commentsPageDTO = new CommentsPageDTO();
 
-                if (comments.Count == 0) throw new Exception("There are no comments for such content unit.");
+                if (comments == null || comments.Count == 0) 
+                {
+                    commentsPageDTO.Comments = new List<CommentViewModel>();
+                    commentsPageDTO.ContentId = contentModelId;
+                    commentsPageDTO.PageNumber = pageNumber;
+                    commentsPageDTO.TotalNumberOfPages = 0;
+                    commentsPageDTO.IsTheLastPage = true;
+                    
+                    return new ResponseModel<CommentsPageDTO>
+                    {
+                        Data = commentsPageDTO,
+                        Error = true,
+                        Message = "There are no comments for such content unit.",
+                        StatusCode = System.Net.HttpStatusCode.OK
+                    };
+                }
 
                 if (comments.Count > unitsPerPage)
                 {
@@ -117,12 +136,29 @@ namespace GigaScramSoft.Services
 
                 if (pageNumber > commentsPageDTO.TotalNumberOfPages || pageNumber <= 0)
                 {
-                    throw new Exception("The number of page is higher than total number of pages.");
+                    commentsPageDTO.Comments = new List<CommentViewModel>();
+                    commentsPageDTO.ContentId = contentModelId;
+                    commentsPageDTO.PageNumber = 1;
+                    commentsPageDTO.IsTheLastPage = true;
+                    
+                    return new ResponseModel<CommentsPageDTO>
+                    {
+                        Data = commentsPageDTO,
+                        Error = true,
+                        Message = "The number of page is higher than total number of pages.",
+                        StatusCode = System.Net.HttpStatusCode.BadRequest
+                    };
                 }
                 else
                 {
                     List<CommentViewModel> commentsVM = new List<CommentViewModel>();
-                    comments.ForEach(comment => commentsVM.Add(new CommentViewModel(comment)));
+                    comments.ForEach(comment => 
+                    {
+                        if (comment != null)
+                        {
+                            commentsVM.Add(new CommentViewModel(comment));
+                        }
+                    });
 
                     commentsPageDTO.Comments = commentsVM.Skip((pageNumber - 1) * unitsPerPage).Take(unitsPerPage).ToList();
                     commentsPageDTO.IsTheLastPage = pageNumber == commentsPageDTO.TotalNumberOfPages;

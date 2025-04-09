@@ -10,11 +10,11 @@ namespace GigaScramSoft.Model
         [Required]
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public UserModel User { get; set; }
+        public UserModel User { get; set; } = null!;
         [Required]
         public int ContentUnitId { get; set; }
         [ForeignKey("ContentUnitId")]
-        public ContentUnitModel ContentUnit { get; set; }
+        public ContentUnitModel ContentUnit { get; set; } = null!;
         public bool IsPositive { get; set; }
     }
 }

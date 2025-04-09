@@ -93,6 +93,11 @@ namespace GigaScramSoft.Services
             try
             {
                 var user = (await GetUserByLogin(username)).Data;
+                if (user == null)
+                {
+                    throw new Exception("User with such login has not found!");
+                }
+                
                 var passwordHashVerificationResult = new PasswordHasher<UserModel>().VerifyHashedPassword(user, user.PasswordHash, oldPassword);
 
                 if (passwordHashVerificationResult == PasswordVerificationResult.Success)

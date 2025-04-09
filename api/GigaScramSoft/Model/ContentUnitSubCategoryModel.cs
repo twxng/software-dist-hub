@@ -10,12 +10,12 @@ namespace GigaScramSoft.Model
 
         [Required]
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         public int MainCategoryId { get; set; }
 
         [ForeignKey("MainCategoryId")]
-        public ContentUnitMainCategoryModel MainCategory { get; set; }
+        public ContentUnitMainCategoryModel MainCategory { get; set; } = null!;
     }
 }

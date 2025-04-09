@@ -33,6 +33,13 @@ namespace GigaScramSoft.Controllers
             else
             {
                 var login = User.FindFirst("Login")?.Value;
+                if (login == null)
+                {
+                    return StatusCode((int)HttpStatusCode.Unauthorized,
+                                       new ResponseModel<ContentUnitModel>(null, "User login not found in token!",
+                                       HttpStatusCode.Unauthorized));
+                }
+                
                 var user = (await _userService.GetUserByLogin(login)).Data;
 
                 if (user == null)

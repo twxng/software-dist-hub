@@ -17,11 +17,13 @@ namespace GigaScramSoft.Services
         {
             try
             {
-                var _subCategory = (await GetSubCategoryByName(contentUnitDTO.SubCategoryName)).Data;
-
-                if (_subCategory == null)
+                var subCategory = await _context.ContentUnitSubCategories
+                                             .Include(sc => sc.MainCategory)
+                                             .FirstOrDefaultAsync(sc => sc.Name.Equals(contentUnitDTO.SubCategoryName));
+                
+                if (subCategory == null)
                 {
-                    return new ResponseModel<ContentUnitModel>(null, "SubCategory by name was not found", System.Net.HttpStatusCode.NotFound);
+                    return new ResponseModel<ContentUnitModel>(new ContentUnitModel(), "The SubCategory has not found!", System.Net.HttpStatusCode.BadRequest) { Error = true };
                 }
 
                 var contentUnitModel = new ContentUnitModel();
@@ -30,7 +32,7 @@ namespace GigaScramSoft.Services
                 contentUnitModel.FullDescription = contentUnitDTO.FullDescription;
                 contentUnitModel.PreviewImage = contentUnitDTO.PreviewImage;
                 contentUnitModel.DownloadLink = contentUnitDTO.DownloadLink;
-                contentUnitModel.SubCategory = _subCategory;
+                contentUnitModel.SubCategory = subCategory;
                 contentUnitModel.CreationDate = DateTime.Now;
 
                 await _context.ContentUnits.AddAsync(contentUnitModel);
@@ -69,14 +71,22 @@ namespace GigaScramSoft.Services
 
                 if (foundContentUnit == null)
                 {
-                    return new ResponseModel<ContentUnitModel>(null, "Content unit not found", System.Net.HttpStatusCode.NotFound);
+                    var emptyModel = new ContentUnitModel
+                    {
+                        Header = string.Empty,
+                        ShortDescription = string.Empty,
+                        FullDescription = string.Empty
+                    };
+                    return new ResponseModel<ContentUnitModel>(emptyModel, "Content unit not found", System.Net.HttpStatusCode.NotFound) { Error = true };
                 }
 
-                var _subCategory = (await GetSubCategoryByName(contentUnitDTO.SubCategoryName)).Data;
+                var subCategory = await _context.ContentUnitSubCategories
+                                             .Include(sc => sc.MainCategory)
+                                             .FirstOrDefaultAsync(sc => sc.Name.Equals(contentUnitDTO.SubCategoryName));
 
-                if (_subCategory == null)
+                if (subCategory == null)
                 {
-                    return new ResponseModel<ContentUnitModel>(null, "SubCategory by name was not found", System.Net.HttpStatusCode.NotFound);
+                    return new ResponseModel<ContentUnitModel>(new ContentUnitModel(), "The SubCategory has not found!", System.Net.HttpStatusCode.BadRequest) { Error = true };
                 }
 
                 foundContentUnit.Header = contentUnitDTO.Header;
@@ -84,7 +94,7 @@ namespace GigaScramSoft.Services
                 foundContentUnit.FullDescription = contentUnitDTO.FullDescription;
                 foundContentUnit.PreviewImage = contentUnitDTO.PreviewImage;
                 foundContentUnit.DownloadLink = contentUnitDTO.DownloadLink;
-                foundContentUnit.SubCategoryId = _subCategory.Id;
+                foundContentUnit.SubCategoryId = subCategory.Id;
 
                 await UpdateContentUnitImages(foundContentUnit, contentUnitDTO.Images);
 
@@ -204,16 +214,26 @@ namespace GigaScramSoft.Services
 
                 if (foundSubCategory == null)
                 {
-                    return new ResponseModel<ContentUnitSubCategoryModel>(null, "SubCategory by name not found", System.Net.HttpStatusCode.NotFound);
+                    var emptyModel = new ContentUnitSubCategoryModel
+                    {
+                        Name = string.Empty,
+                        MainCategory = new ContentUnitMainCategoryModel()
+                    };
+                    return new ResponseModel<ContentUnitSubCategoryModel>(emptyModel, "SubCategory by name not found", System.Net.HttpStatusCode.NotFound);
                 }
                 else
                 {
-                    return new ResponseModel<ContentUnitSubCategoryModel>(foundSubCategory, "SubCategory successfully has found", System.Net.HttpStatusCode.NotFound);
+                    return new ResponseModel<ContentUnitSubCategoryModel>(foundSubCategory, "SubCategory successfully has found", System.Net.HttpStatusCode.OK);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new ResponseModel<ContentUnitSubCategoryModel>(null, "OK", System.Net.HttpStatusCode.InternalServerError);
+                var emptyModel = new ContentUnitSubCategoryModel
+                {
+                    Name = string.Empty,
+                    MainCategory = new ContentUnitMainCategoryModel()
+                };
+                return new ResponseModel<ContentUnitSubCategoryModel>(emptyModel, "Error occurred", System.Net.HttpStatusCode.InternalServerError);
             }
         }
 
@@ -273,7 +293,7 @@ namespace GigaScramSoft.Services
             try
             {
                 List<ContentUnitModel> contentUnits;
-                ContentUnitSubCategoryModel subCategory = null;
+                ContentUnitSubCategoryModel? subCategory = null;
 
                 if (subCategoryId > 0)
                 {
@@ -332,7 +352,7 @@ namespace GigaScramSoft.Services
                             PageNumber = numberOfPage,
                             TotalNumberOfPages = 0,
                             IsTheLastPage = true,
-                            SubCategory = subCategory
+                            SubCategory = subCategory ?? new ContentUnitSubCategoryModel()
                         },
                         Error = false,
                         Message = "No content units found with the given parameters.",
@@ -359,7 +379,7 @@ namespace GigaScramSoft.Services
                             PageNumber = 1,
                             TotalNumberOfPages = contentPageDTO.TotalNumberOfPages,
                             IsTheLastPage = true,
-                            SubCategory = subCategory
+                            SubCategory = subCategory ?? new ContentUnitSubCategoryModel()
                         },
                         Error = true,
                         Message = $"The page number {numberOfPage} is invalid. Total pages: {contentPageDTO.TotalNumberOfPages}",
@@ -374,7 +394,7 @@ namespace GigaScramSoft.Services
                     
                     contentPageDTO.ContentUnits = filteredContentUnitsDTO;
                     contentPageDTO.IsTheLastPage = numberOfPage == contentPageDTO.TotalNumberOfPages;
-                    contentPageDTO.SubCategory = subCategory;
+                    contentPageDTO.SubCategory = subCategory ?? new ContentUnitSubCategoryModel();
                     contentPageDTO.PageNumber = numberOfPage;
 
                     var result = new ResponseModel<ContentPageDTO>
