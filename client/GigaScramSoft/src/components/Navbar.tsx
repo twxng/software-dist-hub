@@ -90,7 +90,7 @@ const Navbar = () => {
         setSuggestions([]);
         setShowSuggestions(false);
       }
-    }, 300); // Затримка в 300мс
+    }, 300); 
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
@@ -335,8 +335,11 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-right">
-          <Link to="/" className="navbar-link">
+					<Link to="/" className="navbar-link">
             Home
+          </Link>
+          <Link to="/categories" className="navbar-link">
+            Catalogue
           </Link>
           {isAuthenticated ? (
             <div className="user-menu-container" ref={userMenuRef}>
@@ -398,7 +401,7 @@ const Navbar = () => {
               onClick={() => setIsAuthModalOpen(true)} 
               className="navbar-button"
             >
-              Login / Register
+              Login
             </button>
           )}
         </div>

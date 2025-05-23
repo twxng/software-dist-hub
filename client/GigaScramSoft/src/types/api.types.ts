@@ -31,4 +31,4 @@ export interface UpdateProfileRequest {
   currentPassword?: string;
   newPassword?: string;
   avatar?: string;
-} 
+}
